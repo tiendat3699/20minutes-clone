@@ -14,7 +14,7 @@ public class PlayerAttackHandler : MonoBehaviour
     public float timeFireRate;
     [ReadOnly] public bool reloading, ready = true;
     private PlayerAnimationHandler animationHandler;
-    private static event Action<float> onReload;
+    private static event Action<float> OnReload;
 
     private void Awake() {
         animationHandler = GetComponent<PlayerAnimationHandler>();
@@ -52,7 +52,7 @@ public class PlayerAttackHandler : MonoBehaviour
         while(timer < timeReload) {
             yield return new WaitForEndOfFrame();
             timer += Time.deltaTime;
-            onReload?.Invoke(timer);
+            OnReload?.Invoke(timer);
         }
 
         bulletAmount = ammoLimit;

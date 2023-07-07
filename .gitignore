@@ -64,3 +64,9 @@ crashlytics-build.properties
 # Visual Studio setting
 .vscode/
 
+CSharpProjFolders
+.editorconfig
+20minutes-clone.code-workspace
+omnisharp.json
+TSKDoNotDelete.txt
+
