@@ -5,12 +5,12 @@ using UnityEngine;
 public class PoolManager : Singleton<PoolManager>
 {
     [SerializeField] PoolerScriptableObject poolerScriptable;
-    public BulletPooler bulletPooler;
+    [HideInInspector] public BulletPooler bulletPooler;
 
     protected override void Awake()
     {
         base.Awake();
-        
+
         bulletPooler = poolerScriptable.bulletPooler;
         bulletPooler.Init();
     }

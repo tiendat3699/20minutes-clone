@@ -552,7 +552,7 @@ MonoBehaviour:
   damage: 10
   shootPoin: {fileID: 1614166575}
   bulletAmount: 0
-  timeReload: 0.5
+  timeReload: 0.8
   timeFireRate: 0.4
   reloading: 0
   ready: 1

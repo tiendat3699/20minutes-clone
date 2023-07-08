@@ -21,16 +21,20 @@ public class PlayerAttackHandler : MonoBehaviour
         bulletAmount = ammoLimit;
     }
 
+    private void LateUpdate() {
+        reloading = animationHandler.IsAnimPlaying("Player_reload", 1);
+    }
+
     public void Attack(Vector2 dirAttack) {
         if(!reloading && ready && bulletAmount > 0) {
-            ready = false;
             Bullet bullet = PoolManager.Instance.bulletPooler.Spawn(shootPoin.position, Quaternion.identity);
             bullet.Fire(dirAttack, speedBullet, damage);
             bulletAmount--;
             if(bulletAmount ==0) {
                 Reload();
+                return;
             }
-
+            ready = false;
             Invoke(nameof(WaitForNextAttack), timeFireRate);
         }
     }
@@ -48,16 +52,13 @@ public class PlayerAttackHandler : MonoBehaviour
     private IEnumerator ReloadCoroutine() {
         float timer = 0;
         animationHandler.SetPlayReload(true);
-        reloading = true;
         while(timer < timeReload) {
             yield return new WaitForEndOfFrame();
             timer += Time.deltaTime;
             OnReload?.Invoke(timer);
         }
-
-        bulletAmount = ammoLimit;
-        reloading = false;
         animationHandler.SetPlayReload(false);
+        bulletAmount = ammoLimit;
 
     }
 

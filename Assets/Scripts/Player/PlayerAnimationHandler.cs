@@ -25,6 +25,10 @@ public class PlayerAnimationHandler : MonoBehaviour
     public void SetPlayReload(bool play) {
         animator.SetBool(reloadHash, play);
     }
-    
-    
+
+    public bool IsAnimPlaying(string animationName, int layerIndex = 0) {
+        return animator.GetCurrentAnimatorStateInfo(layerIndex).IsName(animationName);
+    }
+
+
 }
