@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class Pooler<T> : MonoBehaviour where T: MonoBehaviour
+public class Pooler<T>  where T: MonoBehaviour
 {
     [SerializeField] private T prefabs;
     private ObjectPool<T> pool;
@@ -16,8 +16,7 @@ public class Pooler<T> : MonoBehaviour where T: MonoBehaviour
 
     public T Spawn(Vector2 position, Quaternion rotation) {
         T obj = pool.Get();
-        obj.transform.position = position;
-        obj.transform.rotation = rotation;
+        obj.transform.SetPositionAndRotation(position, rotation);
         return obj;
     }
 
@@ -27,7 +26,7 @@ public class Pooler<T> : MonoBehaviour where T: MonoBehaviour
 
 
     private T CreateFunc() {
-        return Instantiate(prefabs);
+        return GameObject.Instantiate(prefabs);
     }
 
     private void GetFunc(T obj) {
@@ -39,7 +38,7 @@ public class Pooler<T> : MonoBehaviour where T: MonoBehaviour
     }
 
     private void DestroySetup(T obj) {
-        Destroy(obj);
+        GameObject.Destroy(obj);
     }
 
 }

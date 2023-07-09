@@ -25,7 +25,9 @@ public class EnemyDamageable : MonoBehaviour, IDamageable
             rb.AddForce(hitDirection * 3f, ForceMode2D.Impulse);
             Invoke(nameof(ResetKnockBack), 0.3f);
         } else {
-            PoolManager.Instance.enemyPooler.Release(enemyBehaviour);
+            PoolManager poolManager = PoolManager.Instance;
+            poolManager.enemyPooler.Release(enemyBehaviour);
+            poolManager.expPooler.Spawn(transform.position, Quaternion.identity);
         }
     }
 

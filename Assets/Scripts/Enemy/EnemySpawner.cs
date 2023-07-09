@@ -17,7 +17,7 @@ public class EnemySpawner : MonoBehaviour
     }
 
     private void Start() {
-        SpawnEnemy();
+        InvokeRepeating(nameof(SpawnEnemy),0f, spawnTime);
     }
 
     private Vector2[] GetSpawnPoins() {
@@ -35,7 +35,6 @@ public class EnemySpawner : MonoBehaviour
     private void SpawnEnemy() {
         int index = Random.Range(0,spawnPoinAmount);
         PoolManager.Instance.enemyPooler.Spawn(spawnPoins[index], Quaternion.identity);
-        Invoke(nameof(SpawnEnemy), spawnTime);
     }
 
 #if UNITY_EDITOR
