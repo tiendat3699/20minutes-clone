@@ -4,7 +4,7 @@ using UnityEngine.Pool;
 public class Pooler<T> : MonoBehaviour where T: MonoBehaviour
 {
     [SerializeField] private T prefabs;
-    public ObjectPool<T> pool;
+    private ObjectPool<T> pool;
 
     public T Spawn() {
         return pool.Get();
@@ -29,7 +29,7 @@ public class Pooler<T> : MonoBehaviour where T: MonoBehaviour
     private T CreateFunc() {
         return Instantiate(prefabs);
     }
-    
+
     private void GetFunc(T obj) {
         obj.gameObject.SetActive(true);
     }
@@ -40,6 +40,6 @@ public class Pooler<T> : MonoBehaviour where T: MonoBehaviour
 
     private void DestroySetup(T obj) {
         Destroy(obj);
-    } 
+    }
 
 }

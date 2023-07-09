@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: PoolerScriptableObject
   m_EditorClassIdentifier: 
   bulletPooler: {fileID: 1371735299868933873, guid: 6cefb070852a37a4fb7d3669b17dfafe, type: 3}
+  enemyPooler: {fileID: 8805464713343112767, guid: 9d45fcb9c44132d479212ccfd9004b6a, type: 3}

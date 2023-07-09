@@ -8,17 +8,29 @@ public class PlayerAttackHandler : MonoBehaviour
     public int ammoLimit;
     public float speedBullet;
     public int damage;
-    [SerializeField] private Transform shootPoin;
+    [SerializeField] private Transform shootPoin1;
+    [SerializeField] private Transform shootPoin2;
+    private Transform shootPoin;
     [SerializeField, ReadOnly] private int bulletAmount;
     public float timeReload;
     public float timeFireRate;
     [ReadOnly] public bool reloading, ready = true;
     private PlayerAnimationHandler animationHandler;
     private static event Action<float> OnReload;
+    private PlayerController playerController;
 
     private void Awake() {
+        shootPoin = shootPoin1;
         animationHandler = GetComponent<PlayerAnimationHandler>();
+        playerController = GetComponent<PlayerController>();
         bulletAmount = ammoLimit;
+    }
+
+    private void Update() {
+        if (playerController.AimDirection.x != 0) {
+            shootPoin = playerController.AimDirection.x > 0 ? shootPoin1 : shootPoin2;
+        }
+
     }
 
     private void LateUpdate() {
@@ -65,7 +77,8 @@ public class PlayerAttackHandler : MonoBehaviour
     private void OnDrawGizmosSelected() {
         if(shootPoin != null) {
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(shootPoin.position, 0.1f);
+            Gizmos.DrawSphere(shootPoin1.position, 0.1f);
+            Gizmos.DrawSphere(shootPoin2.position, 0.1f);
         }
     }
 }

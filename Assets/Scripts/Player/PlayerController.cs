@@ -14,7 +14,8 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer sprite;
     private PlayerInput inputs;
     private bool attackPress;
-    private Vector2 moveDirection, aimDirection;
+    private Vector2 moveDirection;
+    public Vector2 AimDirection {get; private set;}
 
     private void Awake() {
         inputs = new PlayerInput();
@@ -52,6 +53,7 @@ public class PlayerController : MonoBehaviour
     private void Update() {
         AimHandler();
         Attack();
+        GameManager.Instance.playerMoveDirection = rb.velocity.normalized;
     }
 
     private void FixedUpdate() {
@@ -60,19 +62,21 @@ public class PlayerController : MonoBehaviour
 
     private void GetMoveDirection(InputAction.CallbackContext ctx) {
         moveDirection = ctx.ReadValue<Vector2>();
-        GameManager.Instance.playerMoveDirection = moveDirection;
     }
 
     private void MoveHandler() {
         if(moveDirection.magnitude > 0.2) {
-            // rb.AddForce(moveDirection * speed, ForceMode2D.Force);
-            rb.MovePosition(rb.position + (0.02f * speed * moveDirection));
-            // controller.Move(speed * Time.deltaTime * moveDirection);
+            rb.velocity = speed * moveDirection;
+        } else {
+            rb.velocity = Vector2.zero;
         }
         animationHandler.PlayRun(moveDirection.magnitude);
         if (moveDirection.x != 0) {
                 sprite.flipX = moveDirection.x < 0;
         }
+
+
+
     }
 
     private void GetAttackInput(InputAction.CallbackContext ctx) {
@@ -81,22 +85,22 @@ public class PlayerController : MonoBehaviour
 
     private void GetAimInput(InputAction.CallbackContext ctx) {
         Vector2 pos = Camera.main.ScreenToWorldPoint(ctx.ReadValue<Vector2>());
-        aimDirection = (pos - new Vector2(transform.position.x, transform.position.y)).normalized;
+        AimDirection = (pos - new Vector2(transform.position.x, transform.position.y)).normalized;
     }
 
     private void Attack() {
         if(attackPress) {
-            attackHandler.Attack(aimDirection);
+            attackHandler.Attack(AimDirection);
         }
     }
 
     private void AimHandler() {
-        if(aimDirection != Vector2.zero && !attackHandler.reloading) {
-            hand.eulerAngles = new Vector3(0,0, Utilities.Direction2Angle(aimDirection));
+        if(AimDirection != Vector2.zero && !attackHandler.reloading) {
+            hand.eulerAngles = new Vector3(0,0, Utilities.Direction2Angle(AimDirection));
         }
 
-        if (aimDirection.x != 0) {
-            weapon.flipY = aimDirection.x < 0;
+        if (AimDirection.x != 0) {
+            weapon.flipY = AimDirection.x < 0;
         }
     }
 
