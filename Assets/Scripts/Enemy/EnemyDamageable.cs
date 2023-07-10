@@ -27,6 +27,7 @@ public class EnemyDamageable : MonoBehaviour, IDamageable
         } else {
             PoolManager poolManager = PoolManager.Instance;
             poolManager.enemyPooler.Release(enemyBehaviour);
+            poolManager.hitImpactPooler.Spawn(transform.position, Quaternion.identity);
             poolManager.expPooler.Spawn(transform.position, Quaternion.identity);
             GameManager.Instance.IncreaseKill();
         }

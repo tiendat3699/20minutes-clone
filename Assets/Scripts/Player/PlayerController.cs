@@ -73,7 +73,6 @@ public class PlayerController : MonoBehaviour
         if(!dead) {
             AimHandler();
             Attack();
-            GameManager.Instance.playerMoveDirection = rb.velocity.normalized;
         }
     }
 
@@ -81,6 +80,10 @@ public class PlayerController : MonoBehaviour
         if(!dead) {
             MoveHandler();
         }
+    }
+
+    private void LateUpdate() {
+        GameManager.Instance.playerMoveDirection = rb.velocity.normalized;
     }
 
     private void PlayerDead() {
@@ -100,7 +103,7 @@ public class PlayerController : MonoBehaviour
         }
         animationHandler.PlayRun(moveDirection.magnitude);
         if (moveDirection.x != 0) {
-                sprite.flipX = moveDirection.x < 0;
+            sprite.flipX = moveDirection.x < 0;
         }
 
 

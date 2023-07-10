@@ -74,7 +74,7 @@ public class UIHandler : MonoBehaviour
     }
 
     private void ShowGameOver() {
-        Time.timeScale = 0;
+        gameManager.PauseGame();
         GameOverPopUp.SetActive(true);
     }
 

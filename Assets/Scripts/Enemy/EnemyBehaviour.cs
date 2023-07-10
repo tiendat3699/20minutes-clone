@@ -8,10 +8,12 @@ public class EnemyBehaviour : MonoBehaviour
     private SpriteRenderer sprite;
     private EnemyDamageable damageable;
     private Animator animator;
-    private bool hitting;
+    private bool hitting, pause;
     private int hitHash;
+    private GameManager gameManager;
 
     private void Awake() {
+        gameManager = GameManager.Instance;
         target = GameManager.Instance.player;
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
@@ -21,6 +23,10 @@ public class EnemyBehaviour : MonoBehaviour
     }
 
     private void OnEnable() {
+
+        gameManager.OnPause += HandleOnPauseGame;
+        gameManager.OnResume += HandleOnResumeGame;
+
         damageable.OnBegin += () => {
             animator.SetTrigger(hitHash);
             hitting = true;
@@ -32,14 +38,32 @@ public class EnemyBehaviour : MonoBehaviour
         };
     }
 
+    private void OnDisable() {
+        gameManager.OnPause -= HandleOnPauseGame;
+        gameManager.OnResume -= HandleOnResumeGame;
+    }
+
 
 
     private void FixedUpdate() {
-        if(hitting) return;
+        if(hitting || pause) return;
         Vector2 moveDirection = (target.position - transform.position).normalized;
         if (moveDirection.x != 0) {
                 sprite.flipX = moveDirection.x < 0;
         }
         rb.velocity = enemyScriptable.speed * moveDirection;
+    }
+
+    private void HandleOnPauseGame() {
+        pause = true;
+        rb.velocity = Vector2.zero;
+    }
+
+    private void HandleOnResumeGame() {
+        Invoke(nameof(Resume), 1);
+    }
+
+    private void Resume() {
+        pause = false;
     }
 }

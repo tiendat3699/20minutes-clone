@@ -13,11 +13,9 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField, Range(5, 20)] private int spawnPoinAmount;
     [SerializeField, ReadOnly] private float spawnTime;
     [SerializeField] private int amountSpawnActive = 2;
-    private Vector2[] spawnPoins;
     private GameManager gameManager;
 
     private void Awake() {
-        spawnPoins = GetSpawnPoins();
         gameManager = GameManager.Instance;
         spawnTime = maxSpawnTime;
     }
@@ -53,6 +51,7 @@ public class EnemySpawner : MonoBehaviour
     }
 
     private void SpawnEnemy() {
+        Vector2[] spawnPoins = GetSpawnPoins();
         for(int i = 0 ; i < amountSpawnActive; i++) {
             int index = Random.Range(0,spawnPoinAmount);
             PoolManager.Instance.enemyPooler.Spawn(spawnPoins[index], Quaternion.identity);

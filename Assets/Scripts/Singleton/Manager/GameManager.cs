@@ -15,12 +15,15 @@ public class GameManager : Singleton<GameManager>
     private int killCount;
     private float timer;
     [ReadOnly] public bool isDead;
+    private bool pause;
     public event Action<int, int> OnUpLevel;
     public event Action<int> OnIncreaseExp;
     public event Action<int> OnIncreaseKill;
     public event Action<int> OnUpdatePlayerHP;
     public event Action<int> OnUpdateMaxPlayerHP;
     public event Action<float> OnUpdateTime;
+    public event Action OnPause;
+    public event Action OnResume;
     public event Action OnPlayerDead;
 
     private void Start() {
@@ -28,8 +31,10 @@ public class GameManager : Singleton<GameManager>
     }
 
     private void Update() {
-        timer -= Time.deltaTime;
-        OnUpdateTime?.Invoke(timer);
+        if(!pause) {
+            timer -= Time.deltaTime;
+            OnUpdateTime?.Invoke(timer);
+        }
     }
 
     private void Init() {
@@ -76,5 +81,15 @@ public class GameManager : Singleton<GameManager>
         OnUpdateMaxPlayerHP?.Invoke(maxPlayerHP);
     }
 
+    public void PauseGame() {
+        Time.timeScale = 0;
+        OnPause?.Invoke();
+    }
+
+
+    public void ResumeGame() {
+        Time.timeScale = 1;
+        OnResume?.Invoke();
+    }
 
 }

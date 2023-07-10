@@ -18,7 +18,7 @@ public class Magnet : MonoBehaviour
     private void OnTriggerStay2D(Collider2D other) {
         if(other.TryGetComponent(out ExpItem expItem)) {
             Vector2 dir = (transform.position - expItem.transform.position).normalized;
-            expItem.transform.Translate(dir * speed * Time.deltaTime);
+            expItem.transform.Translate(speed * Time.deltaTime * dir);
         }
     }
 

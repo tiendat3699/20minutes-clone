@@ -5,6 +5,7 @@ using MyCustomAttribute;
 public class PlayerDamageable : MonoBehaviour, IDamageable
 {
 
+    [SerializeField] private ParticleSystem hitEffect;
     private GameManager gameManager;
     [SerializeField, ReadOnly] private bool immortal;
     private static event Action OnHit;
@@ -33,6 +34,7 @@ public class PlayerDamageable : MonoBehaviour, IDamageable
     {
         if(!immortal) {
             if(!gameManager.isDead) {
+                hitEffect.Play();
                 OnHit?.Invoke();
                 OnBegin?.Invoke();
                 gameManager.UpdatePlayerHP(-damage);
