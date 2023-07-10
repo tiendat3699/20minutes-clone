@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using MyCustomAttribute;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -8,16 +9,35 @@ using UnityEditor;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private float radius;
-    [SerializeField] private float spawnTime;
+    [SerializeField] private float maxSpawnTime;
     [SerializeField, Range(5, 20)] private int spawnPoinAmount;
+    [SerializeField, ReadOnly] private float spawnTime;
+    [SerializeField] private int amountSpawnActive = 2;
     private Vector2[] spawnPoins;
+    private GameManager gameManager;
 
     private void Awake() {
         spawnPoins = GetSpawnPoins();
+        gameManager = GameManager.Instance;
+        spawnTime = maxSpawnTime;
     }
+
+    private void OnEnable() {
+        gameManager.OnUpdateTime += CaculateSpawnTime;
+    }
+
+    private void OnDisable() {
+        gameManager.OnUpdateTime -= CaculateSpawnTime;
+    }
+
 
     private void Start() {
         InvokeRepeating(nameof(SpawnEnemy),0f, spawnTime);
+    }
+
+    private void CaculateSpawnTime(float time) {
+
+        spawnTime = maxSpawnTime * (time / gameManager.countdownTime);
     }
 
     private Vector2[] GetSpawnPoins() {
@@ -33,8 +53,10 @@ public class EnemySpawner : MonoBehaviour
     }
 
     private void SpawnEnemy() {
-        int index = Random.Range(0,spawnPoinAmount);
-        PoolManager.Instance.enemyPooler.Spawn(spawnPoins[index], Quaternion.identity);
+        for(int i = 0 ; i < amountSpawnActive; i++) {
+            int index = Random.Range(0,spawnPoinAmount);
+            PoolManager.Instance.enemyPooler.Spawn(spawnPoins[index], Quaternion.identity);
+        }
     }
 
 #if UNITY_EDITOR

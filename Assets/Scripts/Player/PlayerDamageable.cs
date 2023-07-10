@@ -18,9 +18,15 @@ public class PlayerDamageable : MonoBehaviour, IDamageable
     }
 
     private void OnEnable() {
-        gameManager.OnPlayerDead += () => {
-            GetComponent<PlayerAnimationHandler>().PlayDead();
-        };
+        gameManager.OnPlayerDead += HandlePlayerDead;
+    }
+
+    private void OnDisable() {
+        gameManager.OnPlayerDead -= HandlePlayerDead;
+    }
+
+    private void HandlePlayerDead() {
+        GetComponent<PlayerAnimationHandler>().PlayDead();
     }
 
     public void TakeDamage(int damage, Vector2 hitDirection)
@@ -30,8 +36,10 @@ public class PlayerDamageable : MonoBehaviour, IDamageable
                 OnHit?.Invoke();
                 OnBegin?.Invoke();
                 gameManager.UpdatePlayerHP(-damage);
-                rb.AddForce(hitDirection * 4f, ForceMode2D.Impulse);
-                Invoke(nameof(ResetKnockBack), 0.3f);
+                if(!gameManager.isDead) {
+                    rb.AddForce(hitDirection * 8f, ForceMode2D.Impulse);
+                }
+                Invoke(nameof(ResetKnockBack), 0.2f);
                 BeImmortal(0.5f);
             }
         }

@@ -16,7 +16,8 @@ public class PlayerController : MonoBehaviour
     private PlayerDamageable damageable;
     private bool attackPress;
     private Vector2 moveDirection;
-    private bool hitting;
+    private bool hitting, dead;
+    private GameManager gameManager;
     public Vector2 AimDirection {get; private set;}
 
     private void Awake() {
@@ -26,8 +27,10 @@ public class PlayerController : MonoBehaviour
         attackHandler = GetComponent<PlayerAttackHandler>();
         sprite = GetComponent<SpriteRenderer>();
         damageable = GetComponent<PlayerDamageable>();
-        GameManager.Instance.player = transform;
+        gameManager = GameManager.Instance;
+        gameManager.player = transform;
     }
+
 
     private void OnEnable() {
         inputs.PlayerAction.Enable();
@@ -51,6 +54,8 @@ public class PlayerController : MonoBehaviour
         damageable.OnDone += () => {
             hitting = false;
         };
+
+        gameManager.OnPlayerDead += PlayerDead;
     }
 
     private void OnDisable() {
@@ -60,16 +65,26 @@ public class PlayerController : MonoBehaviour
         inputs.PlayerAction.Aim.performed -= GetAimInput;
         inputs.PlayerAction.Attack.performed -= GetAttackInput;
         inputs.PlayerAction.Reload.performed += ReloadHandler;
+        gameManager.OnPlayerDead -= PlayerDead;
+
     }
 
     private void Update() {
-        AimHandler();
-        Attack();
-        GameManager.Instance.playerMoveDirection = rb.velocity.normalized;
+        if(!dead) {
+            AimHandler();
+            Attack();
+            GameManager.Instance.playerMoveDirection = rb.velocity.normalized;
+        }
     }
 
     private void FixedUpdate() {
-        MoveHandler();
+        if(!dead) {
+            MoveHandler();
+        }
+    }
+
+    private void PlayerDead() {
+        dead = true;
     }
 
     private void GetMoveDirection(InputAction.CallbackContext ctx) {

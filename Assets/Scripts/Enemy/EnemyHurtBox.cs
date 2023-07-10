@@ -13,7 +13,7 @@ public class EnemyHurtBox : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other) {
         if(other.TryGetComponent(out IDamageable damageable)) {
-            Vector2 dir = (transform.forward - other.transform.position).normalized;
+            Vector2 dir = (other.transform.position - transform.position).normalized;
             damageable.TakeDamage(enemyScriptable.damage, dir);
         }
 

@@ -42,12 +42,4 @@ public class EnemyBehaviour : MonoBehaviour
         }
         rb.velocity = enemyScriptable.speed * moveDirection;
     }
-
-    private void OnCollisionEnter2D(Collision2D other) {
-        hitting = true;
-    }
-
-    private void OnCollisionExit2D(Collision2D other) {
-        hitting = false;
-    }
 }
