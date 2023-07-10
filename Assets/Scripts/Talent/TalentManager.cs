@@ -58,6 +58,7 @@ public class TalentManager : MonoBehaviour
     }
 
     private void SelectTalent(TalentBase talent) {
+        if(talent == null) return;
         ResetTalentList();
         talentActived.Add(talent);
         talentAvaiable.Remove(talent);

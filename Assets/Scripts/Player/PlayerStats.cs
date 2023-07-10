@@ -1,18 +1,17 @@
 using System;
 using UnityEngine;
-using MyCustomAttribute;
 
 public class PlayerStats : MonoBehaviour
 {
     [SerializeField] private PlayerSO playerSO;
-    public int projectile;
-    public int maxHp;
-    public int ammo;
-    public int speed;
-    public int bulletSpeed;
-    public float reloadTime;
-    public float fireRateTime;
-    public int damage;
+    public int projectile {get; private set;}
+    public int maxHp {get; private set;}
+    public int ammo {get; private set;}
+    public int speed {get; private set;}
+    public int bulletSpeed {get; private set;}
+    public float reloadTime {get; private set;}
+    public float fireRateTime {get; private set;}
+    public int damage {get; private set;}
     public event Action<PlayerStats> OnUpgrade;
 
     private void Awake() {

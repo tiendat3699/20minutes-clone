@@ -20,14 +20,19 @@ public class TalentSelector : MonoBehaviour
     }
 
     private void OnEnable() {
-        button.onClick.AddListener(() => OnClick?.Invoke(talent));
+        button.onClick.AddListener(HandleClick);
+    }
+
+    private void HandleClick() {
+        OnClick?.Invoke(talent);
     }
 
     private void OnDisable() {
-        button.onClick.RemoveAllListeners();
+        button.onClick.RemoveListener(HandleClick);
         nameText.text = "Not Avaiable";
         descText.text = "Not Avaiable";
         image.sprite = defaultImage;
+        talent = null;
     }
 
     public void SetData(TalentBase talent) {
