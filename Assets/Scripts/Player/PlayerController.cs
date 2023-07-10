@@ -13,8 +13,10 @@ public class PlayerController : MonoBehaviour
     private PlayerAttackHandler attackHandler;
     private SpriteRenderer sprite;
     private PlayerInput inputs;
+    private PlayerDamageable damageable;
     private bool attackPress;
     private Vector2 moveDirection;
+    private bool hitting;
     public Vector2 AimDirection {get; private set;}
 
     private void Awake() {
@@ -23,6 +25,7 @@ public class PlayerController : MonoBehaviour
         animationHandler = GetComponent<PlayerAnimationHandler>();
         attackHandler = GetComponent<PlayerAttackHandler>();
         sprite = GetComponent<SpriteRenderer>();
+        damageable = GetComponent<PlayerDamageable>();
         GameManager.Instance.player = transform;
     }
 
@@ -39,6 +42,15 @@ public class PlayerController : MonoBehaviour
         inputs.PlayerAction.Attack.canceled += GetAttackInput;
         //reload input
         inputs.PlayerAction.Reload.performed += ReloadHandler;
+
+        damageable.OnBegin += () => {
+            hitting = true;
+            rb.velocity = Vector2.zero;
+        };
+
+        damageable.OnDone += () => {
+            hitting = false;
+        };
     }
 
     private void OnDisable() {
@@ -65,6 +77,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void MoveHandler() {
+        if(hitting) return;
         if(moveDirection.magnitude > 0.2) {
             rb.velocity = speed * moveDirection;
         } else {

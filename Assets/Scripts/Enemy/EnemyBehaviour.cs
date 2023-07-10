@@ -2,22 +2,27 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-    [SerializeField] public EnemyScriptableObject enemyScriptable;
+    public EnemyScriptableObject enemyScriptable;
     private Transform target;
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private EnemyDamageable damageable;
+    private Animator animator;
     private bool hitting;
+    private int hitHash;
 
     private void Awake() {
         target = GameManager.Instance.player;
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         damageable = GetComponent<EnemyDamageable>();
+        animator =  GetComponent<Animator>();
+        hitHash = Animator.StringToHash("Hit");
     }
 
     private void OnEnable() {
         damageable.OnBegin += () => {
+            animator.SetTrigger(hitHash);
             hitting = true;
             rb.velocity = Vector2.zero;
         };
