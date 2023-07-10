@@ -60,7 +60,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
 
     private void HandleOnResumeGame() {
-        Invoke(nameof(Resume), 1);
+        Invoke(nameof(Resume), 0.5f);
     }
 
     private void Resume() {

@@ -5,17 +5,14 @@ using MyCustomAttribute;
 
 public class PlayerAttackHandler : MonoBehaviour
 {
-    public int ammoLimit;
-    public float speedBullet;
-    public int damage;
+
     [SerializeField] private Transform shootPoin1;
     [SerializeField] private Transform shootPoin2;
     private Transform shootPoin;
     [SerializeField, ReadOnly] private int bulletAmount;
-    public float timeReload;
-    public float timeFireRate;
     [ReadOnly] public bool reloading, ready = true;
     private PlayerAnimationHandler animationHandler;
+    private PlayerStats playerStats;
     private static event Action<float> OnReload;
     private PlayerController playerController;
 
@@ -23,7 +20,8 @@ public class PlayerAttackHandler : MonoBehaviour
         shootPoin = shootPoin1;
         animationHandler = GetComponent<PlayerAnimationHandler>();
         playerController = GetComponent<PlayerController>();
-        bulletAmount = ammoLimit;
+        playerStats = GetComponent<PlayerStats>();
+        bulletAmount = playerStats.ammo;
     }
 
     private void Update() {
@@ -39,20 +37,25 @@ public class PlayerAttackHandler : MonoBehaviour
 
     public void Attack(Vector2 dirAttack) {
         if(!reloading && ready && bulletAmount > 0) {
-            Bullet bullet = PoolManager.Instance.bulletPooler.Spawn(shootPoin.position, Quaternion.identity);
-            bullet.Fire(dirAttack, speedBullet, damage);
+            float angle = 0;
+            for(int i = 0; i < playerStats.projectile; i++) {
+                angle = i % 2 == 0 ? angle + i * 10f : angle - i * 10f; 
+                Vector3 dir = Quaternion.Euler(0, 0, angle) * dirAttack;
+                Bullet bullet = PoolManager.Instance.bulletPooler.Spawn(shootPoin.position, Quaternion.identity);
+                bullet.Fire(dir, playerStats.bulletSpeed, playerStats.damage);
+            }
             bulletAmount--;
             if(bulletAmount ==0) {
                 Reload();
                 return;
             }
             ready = false;
-            Invoke(nameof(WaitForNextAttack), timeFireRate);
+            Invoke(nameof(WaitForNextAttack), playerStats.fireRateTime);
         }
     }
 
     public void Reload() {
-        if(bulletAmount < ammoLimit && !reloading) {
+        if(bulletAmount < playerStats.ammo && !reloading) {
             StartCoroutine(ReloadCoroutine());
         }
     }
@@ -64,13 +67,13 @@ public class PlayerAttackHandler : MonoBehaviour
     private IEnumerator ReloadCoroutine() {
         float timer = 0;
         animationHandler.SetPlayReload(true);
-        while(timer < timeReload) {
+        while(timer < playerStats.reloadTime) {
             yield return new WaitForEndOfFrame();
             timer += Time.deltaTime;
             OnReload?.Invoke(timer);
         }
         animationHandler.SetPlayReload(false);
-        bulletAmount = ammoLimit;
+        bulletAmount = playerStats.ammo;
 
     }
 

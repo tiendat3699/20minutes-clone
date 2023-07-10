@@ -6,43 +6,35 @@ public class PlayerDamageable : MonoBehaviour, IDamageable
 {
 
     [SerializeField] private ParticleSystem hitEffect;
-    private GameManager gameManager;
     [SerializeField, ReadOnly] private bool immortal;
-    private static event Action OnHit;
+    public event Action<int> OnHit;
     public event Action OnBegin;
     public event Action OnDone;
+    public event Action OnDead;
     private Rigidbody2D rb;
+    private PlayerStats playerStats;
+    private int hp;
 
     private void Awake() {
-        gameManager = GameManager.Instance;
         rb = GetComponent<Rigidbody2D>();
-    }
-
-    private void OnEnable() {
-        gameManager.OnPlayerDead += HandlePlayerDead;
-    }
-
-    private void OnDisable() {
-        gameManager.OnPlayerDead -= HandlePlayerDead;
-    }
-
-    private void HandlePlayerDead() {
-        GetComponent<PlayerAnimationHandler>().PlayDead();
+        playerStats = GetComponent<PlayerStats>();
+        hp = playerStats.maxHp;
     }
 
     public void TakeDamage(int damage, Vector2 hitDirection)
     {
         if(!immortal) {
-            if(!gameManager.isDead) {
-                hitEffect.Play();
-                OnHit?.Invoke();
+            if(hp > 0) {
                 OnBegin?.Invoke();
-                gameManager.UpdatePlayerHP(-damage);
-                if(!gameManager.isDead) {
-                    rb.AddForce(hitDirection * 8f, ForceMode2D.Impulse);
-                }
+                hitEffect.Play();
+                hp--;
+                OnHit?.Invoke(hp);
+                rb.AddForce(hitDirection * 8f, ForceMode2D.Impulse);
                 Invoke(nameof(ResetKnockBack), 0.2f);
                 BeImmortal(0.5f);
+            } else {
+                GetComponent<PlayerAnimationHandler>().PlayDead();
+                OnDead?.Invoke();
             }
         }
     }

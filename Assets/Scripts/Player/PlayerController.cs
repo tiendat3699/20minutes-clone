@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField, Range(0, 10)] private float speed;
     [SerializeField] private Transform hand;
     [SerializeField] SpriteRenderer weapon;
     private Rigidbody2D rb;
@@ -14,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer sprite;
     private PlayerInput inputs;
     private PlayerDamageable damageable;
+    private PlayerStats playerStats;
     private bool attackPress;
     private Vector2 moveDirection;
     private bool hitting, dead;
@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
         attackHandler = GetComponent<PlayerAttackHandler>();
         sprite = GetComponent<SpriteRenderer>();
         damageable = GetComponent<PlayerDamageable>();
+        playerStats = GetComponent<PlayerStats>();
         gameManager = GameManager.Instance;
         gameManager.player = transform;
     }
@@ -55,7 +56,7 @@ public class PlayerController : MonoBehaviour
             hitting = false;
         };
 
-        gameManager.OnPlayerDead += PlayerDead;
+        damageable.OnDead += PlayerDead;
     }
 
     private void OnDisable() {
@@ -65,7 +66,7 @@ public class PlayerController : MonoBehaviour
         inputs.PlayerAction.Aim.performed -= GetAimInput;
         inputs.PlayerAction.Attack.performed -= GetAttackInput;
         inputs.PlayerAction.Reload.performed += ReloadHandler;
-        gameManager.OnPlayerDead -= PlayerDead;
+        damageable.OnDead -= PlayerDead;
 
     }
 
@@ -97,17 +98,11 @@ public class PlayerController : MonoBehaviour
     private void MoveHandler() {
         if(hitting) return;
         if(moveDirection.magnitude > 0.2) {
-            rb.velocity = speed * moveDirection;
+            rb.velocity = playerStats.speed * moveDirection;
         } else {
             rb.velocity = Vector2.zero;
         }
         animationHandler.PlayRun(moveDirection.magnitude);
-        if (moveDirection.x != 0) {
-            sprite.flipX = moveDirection.x < 0;
-        }
-
-
-
     }
 
     private void GetAttackInput(InputAction.CallbackContext ctx) {
@@ -132,6 +127,7 @@ public class PlayerController : MonoBehaviour
 
         if (AimDirection.x != 0) {
             weapon.flipY = AimDirection.x < 0;
+            sprite.flipX = AimDirection.x < 0;
         }
     }
 

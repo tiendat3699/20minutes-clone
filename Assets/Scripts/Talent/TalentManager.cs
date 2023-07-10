@@ -1,7 +1,8 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using MyCustomAttribute;
+using Random = UnityEngine.Random;
 
 public class TalentManager : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class TalentManager : MonoBehaviour
     [SerializeField, ReadOnly] private List<TalentBase> talentDisplayed;
     [SerializeField, ReadOnly] private List<TalentBase> talentActived;
     [SerializeField, ReadOnly] private List<TalentBase> talentAvaiable;
+    private Transform player;
+    private PlayerStats playerStats;
     private GameManager gameManager;
 
     private void Awake() {
@@ -18,6 +21,11 @@ public class TalentManager : MonoBehaviour
         talentDisplayed = new List<TalentBase>();
         talentActived = new List<TalentBase>();
         talentAvaiable = new List<TalentBase>(talents);
+    }
+
+    private void Start() {
+        player = gameManager.player;
+        playerStats = player.GetComponent<PlayerStats>();
     }
 
     private void OnEnable() {
@@ -51,8 +59,20 @@ public class TalentManager : MonoBehaviour
 
     private void SelectTalent(TalentBase talent) {
         ResetTalentList();
+        talentActived.Add(talent);
+        talentAvaiable.Remove(talent);
         upgradePopUp.SetActive(false);
         gameManager.ResumeGame();
+        switch(talent.type) {
+            case TalentType.AddWeapon:
+                
+                break;
+            case TalentType.StatsUpgrade:
+                playerStats.Upgrade(talent);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException($"talent type {talent.type} is invalid ");
+        }
     }
 
     private void ResetTalentList() {

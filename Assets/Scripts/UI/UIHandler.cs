@@ -17,6 +17,8 @@ public class UIHandler : MonoBehaviour
     private List<GameObject> healthList;
     private List<GameObject> healthDisableList;
     private GameManager gameManager;
+    private PlayerDamageable playerDamageable;
+    private PlayerStats playerStats;
 
     private void Awake() {
         gameManager = GameManager.Instance;
@@ -24,21 +26,29 @@ public class UIHandler : MonoBehaviour
         healthDisableList = new List<GameObject>();
     }
 
+    private void Start() {        
+        UpdateMaxHealth(playerStats.maxHp);
+        UpdateHealth(playerStats.maxHp);
+    }
+
     private void OnEnable() {
+        playerDamageable = gameManager.player.GetComponent<PlayerDamageable>();
+        playerStats = gameManager.player.GetComponent<PlayerStats>();
+
         gameManager.OnIncreaseExp += HandleSliderExp;
         gameManager.OnUpLevel += HandleLevelUp;
-        gameManager.OnUpdateMaxPlayerHP += UpdateMaxHealth;
-        gameManager.OnUpdatePlayerHP += UpdateHealth;
-        gameManager.OnPlayerDead += HandlePlayeDead;
+        playerDamageable.OnHit += UpdateHealth;
+        playerStats.OnUpgrade += UpdateMaxHealth;
+        playerDamageable.OnDead += HandlePlayeDead;
         gameManager.OnUpdateTime += HandleUpdateTime;
     }
 
     private void OnDisable() {
         gameManager.OnIncreaseExp -= HandleSliderExp;
         gameManager.OnUpLevel -= HandleLevelUp;
-        gameManager.OnUpdateMaxPlayerHP -= UpdateMaxHealth;
-        gameManager.OnUpdatePlayerHP -= UpdateHealth;
-        gameManager.OnPlayerDead -= HandlePlayeDead;
+        playerDamageable.OnHit -= UpdateHealth;
+        playerStats.OnUpgrade -= UpdateMaxHealth;
+        playerDamageable.OnDead -= HandlePlayeDead;
         gameManager.OnUpdateTime -= HandleUpdateTime;
     }
 
@@ -67,6 +77,11 @@ public class UIHandler : MonoBehaviour
             GameObject healthDisable = Instantiate(healthDisablePrefab, healthDisableHolder, false);
             healthDisableList.Add(healthDisable);
         }
+    }
+
+    
+    private void UpdateMaxHealth(PlayerStats playerStats) {
+        UpdateMaxHealth(playerStats.maxHp);
     }
 
     private void HandlePlayeDead() {

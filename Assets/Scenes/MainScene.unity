@@ -9827,6 +9827,7 @@ GameObject:
   - component: {fileID: 513677186}
   - component: {fileID: 513677185}
   - component: {fileID: 513677187}
+  - component: {fileID: 513677188}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -9901,7 +9902,6 @@ Transform:
   - {fileID: 929607270}
   - {fileID: 33831911}
   - {fileID: 344932592}
-  - {fileID: 936792822}
   - {fileID: 1328156159}
   - {fileID: 1119421875}
   - {fileID: 115843196}
@@ -9970,6 +9970,7 @@ MonoBehaviour:
   ammoLimit: 6
   speedBullet: 20
   damage: 10
+  projectile: 2
   shootPoin1: {fileID: 1614166575}
   shootPoin2: {fileID: 1856266733}
   bulletAmount: 0
@@ -10028,6 +10029,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitEffect: {fileID: 115843197}
   immortal: 0
+--- !u!114 &513677188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 513677177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b82e8ff5df23383469ba2b0051ce026b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerSO: {fileID: 11400000, guid: 35c1d30d31290c546bfb00ca6844d539, type: 2}
+  projectile: 0
+  maxHp: 0
+  ammo: 0
+  speed: 0
+  bulletSpeed: 0
+  reloadTime: 0
+  fireRateTime: 0
+  damage: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -10750,37 +10772,6 @@ Transform:
   m_Father: {fileID: 513677179}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &936792821
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 936792822}
-  m_Layer: 3
-  m_Name: Weapons
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &936792822
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 936792821}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 513677179}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &946474297
 GameObject:
   m_ObjectHideFlags: 0
@@ -11175,7 +11166,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 513677179}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1119421876
 SpriteRenderer:
@@ -30042,7 +30033,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 513677179}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1329859977
 GameObject:
@@ -40332,3 +40323,48 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2074344402}
   m_CullTransparentMesh: 1
+--- !u!1 &2108502455
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2108502457}
+  - component: {fileID: 2108502456}
+  m_Layer: 0
+  m_Name: DualShot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2108502456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108502455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba5e0b3f4c01b94419c095a9253242d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectileAmount: 1
+--- !u!4 &2108502457
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108502455}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 17.468483, y: 12.873866, z: -0.28253245}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
