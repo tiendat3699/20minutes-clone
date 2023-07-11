@@ -23,17 +23,34 @@ public class PlayerStats : MonoBehaviour
         reloadTime = playerSO.reloadTime;
         fireRateTime = playerSO.fireRateTime;
         damage = playerSO.damage;
+        DebugLog();
     }
+
 
     public void Upgrade(TalentBase talent) {
         projectile += talent.projectilePlus;
         maxHp += talent.maxHpPlus;
-        ammo += (int)(talent.ammoRate * ammo) / 100;
-        speed += (int)(talent.speedRate * speed) / 100;
-        bulletSpeed += (int)(talent.bulletSpeedRate * bulletSpeed) / 100;
-        reloadTime -= (talent.reloadRate * reloadTime) / 100;
-        fireRateTime -= (talent.fireRate * fireRateTime) / 100;
-        damage += (int)(talent.damageRate * damage) / 100;
+        ammo += (int)(talent.ammoRate * playerSO.ammo) / 100;
+        speed += (int)(talent.speedRate * playerSO.speed) / 100;
+        bulletSpeed += (int)(talent.bulletSpeedRate * playerSO.bulletSpeed) / 100;
+        reloadTime -= (talent.reloadRate * playerSO.reloadTime) / 100;
+        fireRateTime -= (talent.fireRate * playerSO.fireRateTime) / 100;
+        damage += (int)(talent.damageRate * playerSO.damage) / 100;
         OnUpgrade?.Invoke(this);
+        DebugLog();
+    }
+
+
+    private void DebugLog(){
+        GameManager.Instance.SetDebugLog(@$"  
+        projectile: {projectile}
+        maxHp: {maxHp}
+        ammo: {ammo}
+        speed: {speed}
+        bulletSpeed: {bulletSpeed}
+        reloadTime: {reloadTime}s 
+        fireRateTime: {fireRateTime}s
+        damage: {damage}
+        ");
     }
 }

@@ -5,6 +5,11 @@ public class Pooler<T>  where T: MonoBehaviour
 {
     [SerializeField] private T prefabs;
     private ObjectPool<T> pool;
+    private GameManager gameManager;
+
+    private void Awake() {
+        gameManager =  GameManager.Instance;
+    }
 
     public T Spawn() {
         return pool.Get();

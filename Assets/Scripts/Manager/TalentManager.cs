@@ -58,22 +58,24 @@ public class TalentManager : MonoBehaviour
     }
 
     private void SelectTalent(TalentBase talent) {
-        if(talent == null) return;
         ResetTalentList();
-        talentActived.Add(talent);
-        talentAvaiable.Remove(talent);
-        upgradePopUp.SetActive(false);
-        gameManager.ResumeGame();
-        switch(talent.type) {
-            case TalentType.AddWeapon:
-                
-                break;
-            case TalentType.StatsUpgrade:
-                playerStats.Upgrade(talent);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException($"talent type {talent.type} is invalid ");
+        if(talent != null) {
+            talentActived.Add(talent);
+            talentAvaiable.Remove(talent);
+            switch(talent.type) {
+                case TalentType.AddTalent:
+                    Instantiate(talent.talentPrefabs, player, false);
+                    break;
+                case TalentType.StatsUpgrade:
+                    playerStats.Upgrade(talent);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException($"talent type {talent.type} is invalid ");
+            }
         }
+        
+        gameManager.ResumeGame();
+        upgradePopUp.SetActive(false);
     }
 
     private void ResetTalentList() {

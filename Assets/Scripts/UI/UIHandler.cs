@@ -14,8 +14,10 @@ public class UIHandler : MonoBehaviour
     [SerializeField] private GameObject healthPrefab;
     [SerializeField] private GameObject healthDisablePrefab;
     [SerializeField] private GameObject GameOverPopUp;
+    [SerializeField] private GameObject WinGamePopUp;
     private List<GameObject> healthList;
-    private List<GameObject> healthDisableList;
+    private Queue <GameObject> healthActiveQueue;
+    private Queue<GameObject> healthDisableQueue;
     private GameManager gameManager;
     private PlayerDamageable playerDamageable;
     private PlayerStats playerStats;
@@ -23,12 +25,12 @@ public class UIHandler : MonoBehaviour
     private void Awake() {
         gameManager = GameManager.Instance;
         healthList = new List<GameObject>();
-        healthDisableList = new List<GameObject>();
+        healthActiveQueue = new Queue<GameObject>();
+        healthDisableQueue = new Queue<GameObject>();
     }
 
     private void Start() {        
         UpdateMaxHealth(playerStats.maxHp);
-        UpdateHealth(playerStats.maxHp);
     }
 
     private void OnEnable() {
@@ -37,19 +39,17 @@ public class UIHandler : MonoBehaviour
 
         gameManager.OnIncreaseExp += HandleSliderExp;
         gameManager.OnUpLevel += HandleLevelUp;
+        gameManager.OnWin += HandleWinGame;
         playerDamageable.OnHit += UpdateHealth;
         playerStats.OnUpgrade += UpdateMaxHealth;
         playerDamageable.OnDead += HandlePlayeDead;
-        gameManager.OnUpdateTime += HandleUpdateTime;
+        WaveManager.Instance.OnCountDown += HandleUpdateTime;
     }
 
     private void OnDisable() {
         gameManager.OnIncreaseExp -= HandleSliderExp;
         gameManager.OnUpLevel -= HandleLevelUp;
-        playerDamageable.OnHit -= UpdateHealth;
-        playerStats.OnUpgrade -= UpdateMaxHealth;
-        playerDamageable.OnDead -= HandlePlayeDead;
-        gameManager.OnUpdateTime -= HandleUpdateTime;
+        gameManager.OnWin -= HandleWinGame;
     }
 
     private void HandleSliderExp(int exp) {
@@ -66,22 +66,36 @@ public class UIHandler : MonoBehaviour
         for(int i = 0; i < healthList.Count; i++) {
             bool active = i < hp;
             healthList[i].SetActive(active);
+            healthActiveQueue.Clear();
+            if(active) {
+                healthActiveQueue.Enqueue(healthList[i]);
+            }
         }
     }
 
     private void UpdateMaxHealth(int maxHp) {
-        while(healthDisableList.Count < maxHp) {
+        while(healthDisableQueue.Count < maxHp) {
             GameObject health = Instantiate(healthPrefab, healthHolder, false);
-            health.SetActive(false);
             healthList.Add(health);
             GameObject healthDisable = Instantiate(healthDisablePrefab, healthDisableHolder, false);
-            healthDisableList.Add(healthDisable);
+            healthDisableQueue.Enqueue(healthDisable);
+        }
+
+        while(healthDisableQueue.Count > maxHp) {
+            GameObject obj = healthDisableQueue.Dequeue();
+            Destroy(obj);
+            healthList.Remove(obj);
+        }
+
+        while(healthActiveQueue.Count > maxHp) {
+            Debug.Log(healthActiveQueue.Count);
+            Destroy(healthActiveQueue.Dequeue());
         }
     }
 
     
-    private void UpdateMaxHealth(PlayerStats playerStats) {
-        UpdateMaxHealth(playerStats.maxHp);
+    private void UpdateMaxHealth(PlayerStats stats) {
+        UpdateMaxHealth(stats.maxHp);
     }
 
     private void HandlePlayeDead() {
@@ -93,8 +107,21 @@ public class UIHandler : MonoBehaviour
         GameOverPopUp.SetActive(true);
     }
 
+    private void HandleWinGame() {
+        Invoke(nameof(ShowWinGame), 1.5f);
+    }
+
+    private void ShowWinGame() {
+        gameManager.PauseGame();
+        WinGamePopUp.SetActive(true);
+    }
+
     private void HandleUpdateTime(float time) {
         TimeSpan timeSpan = TimeSpan.FromSeconds(time);
         timeText.text = DateTime.Today.Add(timeSpan).ToString("mm:ss");
+    }
+
+    public void ResetGame() {
+        gameManager.ResetGame();
     }
 }

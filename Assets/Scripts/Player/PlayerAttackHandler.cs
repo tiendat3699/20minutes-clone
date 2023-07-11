@@ -21,6 +21,9 @@ public class PlayerAttackHandler : MonoBehaviour
         animationHandler = GetComponent<PlayerAnimationHandler>();
         playerController = GetComponent<PlayerController>();
         playerStats = GetComponent<PlayerStats>();
+    }
+
+    private void Start() {
         bulletAmount = playerStats.ammo;
     }
 
@@ -72,6 +75,7 @@ public class PlayerAttackHandler : MonoBehaviour
             timer += Time.deltaTime;
             OnReload?.Invoke(timer);
         }
+        yield return new WaitForSeconds(0.15f);
         animationHandler.SetPlayReload(false);
         bulletAmount = playerStats.ammo;
 

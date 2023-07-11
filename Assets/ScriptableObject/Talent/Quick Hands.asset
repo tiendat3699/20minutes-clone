@@ -15,12 +15,13 @@ MonoBehaviour:
   sprite: {fileID: 0}
   type: 1
   talentPrefabs: {fileID: 0}
-  projectile: 0
-  maxHp: 0
+  projectilePlus: 0
+  maxHpPlus: 0
+  ammoRate: 0
   speedRate: 0
   bulletSpeedRate: 0
-  reloadRate: 0
-  fireRate: 0
+  reloadRate: 20
+  fireRate: 5
   damageRate: 0
   description: 'Reload Rate +20%
 

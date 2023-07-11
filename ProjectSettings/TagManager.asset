@@ -14,10 +14,10 @@ TagManager:
   - Area
   - Ground
   - Enemy
-  - Bullet
+  - HurtBox
   - Item
   - Magnet
-  - EnemyHurtBox
+  - 
   - 
   - 
   - 

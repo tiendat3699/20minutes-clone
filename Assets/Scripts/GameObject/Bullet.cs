@@ -1,11 +1,9 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-public class Bullet : MonoBehaviour
+public class Bullet : Hurtbox
 {
-    [SerializeField] private LayerMask layerMask;
     private Rigidbody2D rb;
-    private int damage;
     private Vector2 dirMove;
     private Vector2 originPos;
     private TrailRenderer trail;
@@ -29,13 +27,10 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other) {
-        if((layerMask & (1 << other.gameObject.layer)) != 0) {
-            if(other.TryGetComponent(out IDamageable damageable)) {
-                damageable.TakeDamage(damage, dirMove);
-                PoolManager.Instance.bulletPooler.Release(this);
-            }
-        }
+    protected override void HandlerTrigger(Collider2D other, IDamageable damageable)
+    {
+        base.HandlerTrigger(other, damageable);
+        PoolManager.Instance.bulletPooler.Release(this);
     }
 
     private void OnDisable() {

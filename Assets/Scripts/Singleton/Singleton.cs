@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Singleton<T> : MonoBehaviour where T: Component
 {
-    private static T _instance;
+    protected static T _instance;
     public static T Instance {
         get {
             if(_instance == null) {
@@ -23,8 +23,18 @@ public class Singleton<T> : MonoBehaviour where T: Component
             Destroy(this);
         } else {
             _instance = this as T;
-            DontDestroyOnLoad(gameObject);
         }
     }
 
+}
+
+public class PersistentSingleton<T> : Singleton<T> where T : Component
+{
+    protected override void Awake()
+    {
+        base.Awake();
+        if(_instance == this) {
+            DontDestroyOnLoad(gameObject);
+        }
+    }
 }

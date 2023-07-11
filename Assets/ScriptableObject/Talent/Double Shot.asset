@@ -15,14 +15,14 @@ MonoBehaviour:
   sprite: {fileID: 0}
   type: 1
   talentPrefabs: {fileID: 0}
-  projectile: 1
-  maxHp: 0
+  projectilePlus: 1
+  maxHpPlus: 0
   ammoRate: 0
   speedRate: 0
   bulletSpeedRate: 0
   reloadRate: 0
   fireRate: 0
-  damageRate: 0
+  damageRate: -10
   description: 'Projectiles +1
 
     Bullet Damage -10%'

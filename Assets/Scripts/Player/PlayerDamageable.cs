@@ -13,29 +13,45 @@ public class PlayerDamageable : MonoBehaviour, IDamageable
     public event Action OnDead;
     private Rigidbody2D rb;
     private PlayerStats playerStats;
+    private int maxHp;
     private int hp;
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         playerStats = GetComponent<PlayerStats>();
-        hp = playerStats.maxHp;
+    }
+
+    private void Start() {
+        maxHp = playerStats.maxHp;
+        hp = maxHp;
+    }
+
+    private void OnEnable() {
+        playerStats.OnUpgrade += UpdateMaxHealth;
+    }
+
+    public void UpdateMaxHealth(PlayerStats stats) {
+        int diffHp = stats.maxHp - maxHp;
+        hp += diffHp > 1 ? diffHp : 0; 
+        maxHp = stats.maxHp;
     }
 
     public void TakeDamage(int damage, Vector2 hitDirection)
     {
+        if(hp <= 0) return;
         if(!immortal) {
-            if(hp > 0) {
                 OnBegin?.Invoke();
                 hitEffect.Play();
                 hp--;
                 OnHit?.Invoke(hp);
-                rb.AddForce(hitDirection * 8f, ForceMode2D.Impulse);
-                Invoke(nameof(ResetKnockBack), 0.2f);
-                BeImmortal(0.5f);
-            } else {
-                GetComponent<PlayerAnimationHandler>().PlayDead();
-                OnDead?.Invoke();
-            }
+                if(hp > 0) {
+                    rb.AddForce(hitDirection * 8f, ForceMode2D.Impulse);
+                    Invoke(nameof(ResetKnockBack), 0.2f);
+                    BeImmortal(0.5f);
+                } else {
+                    GetComponent<PlayerAnimationHandler>().PlayDead();
+                    OnDead?.Invoke();
+                }
         }
     }
 

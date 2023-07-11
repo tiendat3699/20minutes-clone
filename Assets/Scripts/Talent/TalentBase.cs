@@ -2,7 +2,7 @@ using UnityEngine;
 using MyCustomAttribute;
 
 public enum TalentType {
-    AddWeapon,
+    AddTalent,
     StatsUpgrade,
 }
 
