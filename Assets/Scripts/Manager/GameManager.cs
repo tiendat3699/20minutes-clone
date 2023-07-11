@@ -5,12 +5,13 @@ using MyCustomAttribute;
 
 public class GameManager : PersistentSingleton<GameManager>
 {
-    [ReadOnly] public Transform player;
+    public Transform player {get; private set;}
     [ReadOnly] public Vector2 playerMoveDirection;
     private int playerLevel = 1;
     private int ExpToUpLevel = 10;
     private int playerExp;
     private int killCount;
+    public event Action<Transform> OnSetPlayer;
     public event Action<int, int> OnUpLevel;
     public event Action<int> OnIncreaseExp;
     public event Action<int> OnIncreaseKill;
@@ -31,6 +32,11 @@ public class GameManager : PersistentSingleton<GameManager>
 
     private void Init(Scene scene, LoadSceneMode loadSceneMode) {
         OnUpLevel?.Invoke(playerLevel, ExpToUpLevel);
+    }
+
+    public void SetPlayer(Transform player) {
+        this.player = player;
+        OnSetPlayer?.Invoke(player);
     }
 
     public void UpLevel() {

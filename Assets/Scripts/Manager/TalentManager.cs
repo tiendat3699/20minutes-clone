@@ -24,18 +24,23 @@ public class TalentManager : MonoBehaviour
     }
 
     private void Start() {
-        player = gameManager.player;
-        playerStats = player.GetComponent<PlayerStats>();
     }
 
     private void OnEnable() {
+        gameManager.OnSetPlayer += Init;
         gameManager.OnUpLevel += ShowUpgrade;
         TalentSelector.OnClick += SelectTalent;
     }
 
     private void OnDisable() {
+        gameManager.OnSetPlayer -= Init;
         gameManager.OnUpLevel -= ShowUpgrade;
         TalentSelector.OnClick -= SelectTalent;
+    }
+
+    private void Init(Transform player) {
+        this.player = player;
+        playerStats = player.GetComponent<PlayerStats>();
     }
 
     private void ShowUpgrade(int lv, int maxExp) {

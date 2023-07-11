@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 AimDirection {get; private set;}
 
     private void Awake() {
+        gameManager = GameManager.Instance;
         inputs = new PlayerInput();
         rb = GetComponent<Rigidbody2D>();
         animationHandler = GetComponent<PlayerAnimationHandler>();
@@ -28,8 +29,6 @@ public class PlayerController : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         damageable = GetComponent<PlayerDamageable>();
         playerStats = GetComponent<PlayerStats>();
-        gameManager = GameManager.Instance;
-        gameManager.player = transform;
     }
 
 
@@ -68,6 +67,10 @@ public class PlayerController : MonoBehaviour
         inputs.PlayerAction.Reload.performed += ReloadHandler;
         damageable.OnDead -= PlayerDead;
 
+    }
+
+    private void Start() {
+        gameManager.SetPlayer(transform);
     }
 
     private void Update() {

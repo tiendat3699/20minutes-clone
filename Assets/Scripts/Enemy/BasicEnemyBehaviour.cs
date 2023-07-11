@@ -22,7 +22,6 @@ public class BasicEnemyBehaviour : MonoBehaviour
 
     private void Awake() {
         gameManager = GameManager.Instance;
-        target = GameManager.Instance.player;
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         damageable = GetComponent<EnemyDamageable>();
@@ -50,6 +49,10 @@ public class BasicEnemyBehaviour : MonoBehaviour
     private void OnDisable() {
         gameManager.OnPause -= HandleOnPauseGame;
         gameManager.OnResume -= HandleOnResumeGame;
+    }
+
+    private void Start() {
+        target = GameManager.Instance.player;
     }
 
     protected virtual void FixedUpdate() {

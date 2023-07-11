@@ -30,34 +30,38 @@ public class UIHandler : MonoBehaviour
         healthDisableQueue = new Queue<GameObject>();
     }
 
-    private void Start() {        
-        UpdateMaxHealth(playerStats.maxHp);
-    }
-
     private void OnEnable() {
-        playerDamageable = gameManager.player.GetComponent<PlayerDamageable>();
-        playerStats = gameManager.player.GetComponent<PlayerStats>();
-
+        gameManager.OnSetPlayer += Init;
         gameManager.OnIncreaseExp += HandleSliderExp;
         gameManager.OnUpLevel += HandleLevelUp;
         gameManager.OnWin += HandleWinGame;
+    }
+
+
+    private void OnDisable() {
+        gameManager.OnSetPlayer -= Init;
+        gameManager.OnIncreaseExp -= HandleSliderExp;
+        gameManager.OnUpLevel -= HandleLevelUp;
+        gameManager.OnWin -= HandleWinGame;
+        PlayerAttackHandler.OnAmmoUpdate -= HandleAmmoChange;
+    }
+    private void Init(Transform player) {
+        playerDamageable = player.GetComponent<PlayerDamageable>();
+        playerStats = player.GetComponent<PlayerStats>();
+
         playerDamageable.OnHit += UpdateHealth;
         playerStats.OnUpgrade += UpdateMaxHealth;
         playerDamageable.OnDead += HandlePlayeDead;
         WaveManager.Instance.OnCountDown += HandleUpdateTime;
         PlayerAttackHandler.OnAmmoUpdate += HandleAmmoChange;
+        
+        UpdateMaxHealth(playerStats.maxHp);
+        UpdateHealth(playerStats.maxHp);
     }
 
     private void HandleAmmoChange(int ammo)
     {
         ammoText.text = $"{ammo}/{playerStats.ammo}";
-    }
-
-    private void OnDisable() {
-        gameManager.OnIncreaseExp -= HandleSliderExp;
-        gameManager.OnUpLevel -= HandleLevelUp;
-        gameManager.OnWin -= HandleWinGame;
-        PlayerAttackHandler.OnAmmoUpdate -= HandleAmmoChange;
     }
 
     private void HandleSliderExp(int exp) {
@@ -71,10 +75,10 @@ public class UIHandler : MonoBehaviour
     }
 
     private void UpdateHealth(int hp) {
+        healthActiveQueue.Clear();
         for(int i = 0; i < healthList.Count; i++) {
             bool active = i < hp;
             healthList[i].SetActive(active);
-            healthActiveQueue.Clear();
             if(active) {
                 healthActiveQueue.Enqueue(healthList[i]);
             }
@@ -96,8 +100,9 @@ public class UIHandler : MonoBehaviour
         }
 
         while(healthActiveQueue.Count > maxHp) {
-            Debug.Log(healthActiveQueue.Count);
-            Destroy(healthActiveQueue.Dequeue());
+            GameObject obj = healthActiveQueue.Dequeue();
+            Destroy(obj);
+            healthList.Remove(obj);
         }
     }
 
