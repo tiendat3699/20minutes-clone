@@ -1,16 +1,24 @@
+using System;
 using UnityEngine;
 
-public class EnemyBehaviour : MonoBehaviour
+public enum EnemyState {
+    Chase,
+    Attack
+}
+
+[RequireComponent(typeof(Rigidbody2D))]
+public class BasicEnemyBehaviour : MonoBehaviour
 {
     public EnemyScriptableObject enemyScriptable;
-    private Transform target;
-    private Rigidbody2D rb;
-    private SpriteRenderer sprite;
-    private EnemyDamageable damageable;
-    private Animator animator;
+    protected Transform target;
+    protected EnemyState state;
+    protected Rigidbody2D rb;
+    protected SpriteRenderer sprite;
+    protected EnemyDamageable damageable;
+    protected Animator animator;
     private bool hitting, pause;
     private int hitHash;
-    private GameManager gameManager;
+    protected GameManager gameManager;
 
     private void Awake() {
         gameManager = GameManager.Instance;
@@ -35,6 +43,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         damageable.OnDone += () => {
             hitting = false;
+            rb.velocity = Vector2.zero;
         };
     }
 
@@ -43,15 +52,18 @@ public class EnemyBehaviour : MonoBehaviour
         gameManager.OnResume -= HandleOnResumeGame;
     }
 
-
-
-    private void FixedUpdate() {
+    protected virtual void FixedUpdate() {
         if(hitting || pause) return;
-        Vector2 moveDirection = (target.position - transform.position).normalized;
-        if (moveDirection.x != 0) {
-                sprite.flipX = moveDirection.x < 0;
+        switch(state) {
+            case EnemyState.Chase:
+                ChasePlayer();
+                break;
+            case EnemyState.Attack:
+                Attack();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException($"state {state} is invalid");
         }
-        rb.velocity = enemyScriptable.speed * moveDirection;
     }
 
     private void HandleOnPauseGame() {
@@ -65,5 +77,17 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Resume() {
         pause = false;
+    }
+
+    protected virtual void ChasePlayer() {
+        Vector2 moveDirection = (target.position - transform.position).normalized;
+        if (moveDirection.x != 0) {
+                sprite.flipX = moveDirection.x < 0;
+        }
+        rb.velocity = enemyScriptable.speed * moveDirection;
+    }
+
+    protected virtual void Attack() {
+
     }
 }

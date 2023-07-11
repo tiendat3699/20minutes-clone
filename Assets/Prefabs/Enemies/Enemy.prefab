@@ -160,10 +160,10 @@ GameObject:
   - component: {fileID: 3467272883678545484}
   - component: {fileID: 3467272883678545485}
   - component: {fileID: 3467272883678545486}
-  - component: {fileID: 3467272883678545487}
   - component: {fileID: 7663537407682565300}
   - component: {fileID: 5611209428263952253}
   - component: {fileID: 521683747841894546}
+  - component: {fileID: 4461696248796078776}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -260,19 +260,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &3467272883678545487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3467272883678545472}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14bec7df99acf4242bf7a33eb86332d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyScriptable: {fileID: 11400000, guid: 7fe2d9b081b06d74fa13cf3192196987, type: 2}
 --- !u!50 &7663537407682565300
 Rigidbody2D:
   serializedVersion: 4
@@ -322,3 +309,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f80ddce6c9e1224984aaaf894d4bcf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4461696248796078776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3467272883678545472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6bb4eb69a480c4409fdd5e81a231106, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyScriptable: {fileID: 11400000, guid: 7fe2d9b081b06d74fa13cf3192196987, type: 2}

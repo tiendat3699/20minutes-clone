@@ -30,7 +30,7 @@ public class BulletPooler : Pooler<Bullet>
 
 //enemy pooler
 [Serializable]
-public class EnemyPooler : Pooler<EnemyBehaviour>
+public class EnemyPooler : Pooler<BasicEnemyBehaviour>
 {
     public override void Init(bool collectionCheck = false, int defaultCapacity = 10, int max = 100)
     {

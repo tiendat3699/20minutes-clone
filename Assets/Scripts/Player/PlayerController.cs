@@ -80,11 +80,8 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate() {
         if(!dead) {
             MoveHandler();
+            GameManager.Instance.playerMoveDirection = rb.velocity.normalized;
         }
-    }
-
-    private void LateUpdate() {
-        GameManager.Instance.playerMoveDirection = rb.velocity.normalized;
     }
 
     private void PlayerDead() {

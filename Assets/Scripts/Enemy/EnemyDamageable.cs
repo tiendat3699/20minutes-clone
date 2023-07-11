@@ -5,14 +5,14 @@ public class EnemyDamageable : MonoBehaviour, IDamageable
 {
     private int HP;
     private Rigidbody2D rb;
-    private EnemyBehaviour enemyBehaviour;
+    private BasicEnemyBehaviour basicEnemyBehaviour;
     private GameManager gameManager;
     public event Action OnBegin, OnDone;
     private bool endGame;
 
     private void Awake() {
-        enemyBehaviour = GetComponent<EnemyBehaviour>();
-        HP = enemyBehaviour.enemyScriptable.maxHP;
+        basicEnemyBehaviour = GetComponent<BasicEnemyBehaviour>();
+        HP = basicEnemyBehaviour.enemyScriptable.maxHP;
         rb = GetComponent<Rigidbody2D>();
         gameManager = GameManager.Instance;
     }
@@ -23,14 +23,14 @@ public class EnemyDamageable : MonoBehaviour, IDamageable
 
     private void OnDisable() {
         rb.velocity = Vector2.zero;
-        HP = enemyBehaviour.enemyScriptable.maxHP;
+        HP = basicEnemyBehaviour.enemyScriptable.maxHP;
         gameManager.OnWin -= HandleOnWin;
     }
 
     private void HandleOnWin() {
         endGame = true;
         Vector2 dir = (gameManager.player.position - transform.position).normalized;
-        TakeDamage(enemyBehaviour.enemyScriptable.maxHP, dir);
+        TakeDamage(basicEnemyBehaviour.enemyScriptable.maxHP, dir);
     }
 
     public void TakeDamage(int damage, Vector2 hitDirection)
@@ -43,7 +43,7 @@ public class EnemyDamageable : MonoBehaviour, IDamageable
             Invoke(nameof(ResetKnockBack), 0.3f);
         } else {
             PoolManager poolManager = PoolManager.Instance;
-            poolManager.enemyPooler.Release(enemyBehaviour);
+            poolManager.enemyPooler.Release(basicEnemyBehaviour);
             poolManager.hitImpactPooler.Spawn(transform.position, Quaternion.identity);
             if(!endGame) {
                 poolManager.expPooler.Spawn(transform.position, Quaternion.identity);

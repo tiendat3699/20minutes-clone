@@ -9,6 +9,7 @@ public class UIHandler : MonoBehaviour
     [SerializeField] private Slider sliderExp;
     [SerializeField] private Text levelText;
     [SerializeField] private Text timeText;
+    [SerializeField] private Text ammoText;
     [SerializeField] private Transform healthHolder;
     [SerializeField] private Transform healthDisableHolder;
     [SerializeField] private GameObject healthPrefab;
@@ -44,12 +45,19 @@ public class UIHandler : MonoBehaviour
         playerStats.OnUpgrade += UpdateMaxHealth;
         playerDamageable.OnDead += HandlePlayeDead;
         WaveManager.Instance.OnCountDown += HandleUpdateTime;
+        PlayerAttackHandler.OnAmmoUpdate += HandleAmmoChange;
+    }
+
+    private void HandleAmmoChange(int ammo)
+    {
+        ammoText.text = $"{ammo}/{playerStats.ammo}";
     }
 
     private void OnDisable() {
         gameManager.OnIncreaseExp -= HandleSliderExp;
         gameManager.OnUpLevel -= HandleLevelUp;
         gameManager.OnWin -= HandleWinGame;
+        PlayerAttackHandler.OnAmmoUpdate -= HandleAmmoChange;
     }
 
     private void HandleSliderExp(int exp) {

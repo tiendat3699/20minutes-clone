@@ -14,9 +14,10 @@ public class WaveManager : Singleton<WaveManager>
     [SerializeField, ReadOnly] private float spawnTime;
     [SerializeField] private int amountSpawnActive = 2;
     [SerializeField] private float countdownTime;
-    private float timer;
+    [SerializeField] private bool active = true;
+    [SerializeField] private BossSpawnInfo[] bossSpawnInfos;
+    private float timerSpawn, timerIncreaseSpawnActive, timerBoss;
     public event Action<float> OnCountDown;
-
     private GameManager gameManager;
 
     protected override void Awake() {
@@ -26,24 +27,33 @@ public class WaveManager : Singleton<WaveManager>
     }
 
     private void Start() {
-        timer = countdownTime;
-        InvokeRepeating(nameof(SpawnEnemy),0f, spawnTime);
+        timerSpawn = countdownTime;
+        if(active) {
+            InvokeRepeating(nameof(SpawnEnemy),0f, spawnTime);
+        }
     }
 
     private void Update() {
-        if(timer > 0) {
-            timer -= Time.deltaTime;
+        if(timerSpawn > 0) {
+            timerSpawn -= Time.deltaTime;
+            timerIncreaseSpawnActive += Time.deltaTime;
+            timerBoss += Time.deltaTime;
         } else {
-            timer = 0;
+            timerSpawn = 0;
             gameManager.Win();
         }
+        SpawnBoss();
         CaculateSpawnTime();
-        OnCountDown?.Invoke(timer);
+        OnCountDown?.Invoke(timerSpawn);
     }
 
     private void CaculateSpawnTime() {
 
-        spawnTime = maxSpawnTime * (timer / countdownTime);
+        spawnTime = maxSpawnTime * (timerSpawn / countdownTime);
+        if(timerIncreaseSpawnActive >= 120) {
+            amountSpawnActive++;
+            timerIncreaseSpawnActive = 0;
+        }
     }
 
     private Vector2[] GetSpawnPoins(Vector3 center) {
@@ -66,6 +76,18 @@ public class WaveManager : Singleton<WaveManager>
         }
     }
 
+    private void SpawnBoss() {
+        for(int i = 0; i < bossSpawnInfos.Length; i++) {
+            if(!bossSpawnInfos[i].spawned && timerBoss >= bossSpawnInfos[i].timeSpawm) {
+                Vector2[] spawnPoins = GetSpawnPoins(gameManager.player.position);
+                int index = Random.Range(0,spawnPoinAmount);
+                Instantiate(bossSpawnInfos[i].bossPrefab, spawnPoins[index], Quaternion.identity);
+                bossSpawnInfos[i].spawned = true;
+            }
+
+        }
+    }
+
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected() {
         Handles.color = Color.blue;
@@ -78,4 +100,11 @@ public class WaveManager : Singleton<WaveManager>
         }
     }
 #endif
+}
+
+[Serializable]
+public class BossSpawnInfo {
+    public float timeSpawm;
+    public BossBehaviour bossPrefab;
+    [ReadOnly] public bool spawned;
 }

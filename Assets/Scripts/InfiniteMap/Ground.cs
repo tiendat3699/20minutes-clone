@@ -1,9 +1,15 @@
+using System.Collections;
 using UnityEngine;
 
 public class Ground : MonoBehaviour
 {
 
     private void OnTriggerExit2D(Collider2D other) {
+        StartCoroutine(MoveToNewPos());
+    }
+
+    private IEnumerator MoveToNewPos() {
+        yield return new WaitForFixedUpdate();
         Vector3 playerPos = GameManager.Instance.player.position;
         float diffX = Mathf.Abs(playerPos.x - transform.position.x);
         float diffY = Mathf.Abs(playerPos.y - transform.position.y);

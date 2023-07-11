@@ -13,7 +13,8 @@ public class PlayerAttackHandler : MonoBehaviour
     [ReadOnly] public bool reloading, ready = true;
     private PlayerAnimationHandler animationHandler;
     private PlayerStats playerStats;
-    private static event Action<float> OnReload;
+    public static event Action<float> OnReload;
+    public static event Action<int> OnAmmoUpdate;
     private PlayerController playerController;
 
     private void Awake() {
@@ -25,6 +26,7 @@ public class PlayerAttackHandler : MonoBehaviour
 
     private void Start() {
         bulletAmount = playerStats.ammo;
+        OnAmmoUpdate?.Invoke(bulletAmount);
     }
 
     private void Update() {
@@ -48,6 +50,7 @@ public class PlayerAttackHandler : MonoBehaviour
                 bullet.Fire(dir, playerStats.bulletSpeed, playerStats.damage);
             }
             bulletAmount--;
+            OnAmmoUpdate?.Invoke(bulletAmount);
             if(bulletAmount ==0) {
                 Reload();
                 return;
@@ -73,11 +76,12 @@ public class PlayerAttackHandler : MonoBehaviour
         while(timer < playerStats.reloadTime) {
             yield return new WaitForEndOfFrame();
             timer += Time.deltaTime;
-            OnReload?.Invoke(timer);
+            OnReload?.Invoke(timer/playerStats.reloadTime);
         }
         yield return new WaitForSeconds(0.15f);
         animationHandler.SetPlayReload(false);
         bulletAmount = playerStats.ammo;
+        OnAmmoUpdate?.Invoke(bulletAmount);
 
     }
 

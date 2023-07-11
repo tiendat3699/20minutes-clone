@@ -23,6 +23,9 @@ public class PlayerStats : MonoBehaviour
         reloadTime = playerSO.reloadTime;
         fireRateTime = playerSO.fireRateTime;
         damage = playerSO.damage;
+    }
+
+    private void Start() {
         DebugLog();
     }
 
