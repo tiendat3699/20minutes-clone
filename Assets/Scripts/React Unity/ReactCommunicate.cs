@@ -4,13 +4,15 @@ using UnityEngine;
 public class ReactCommunicate : PersistentSingleton<ReactCommunicate>
 {   
     [DllImport("__Internal")]
-    private static extern void Ready ();
-
+    private static extern int Ready ();
+    private FakeAPIData APIData;
+    
     private void Start() {
+#if !UNITY_EDITOR && UNITY_WEBGL 
         Ready();
+#endif
     }
 
-    private FakeAPIData APIData;
     public void SetData(string jsonData) {
        APIData = JsonUtility.FromJson<FakeAPIData>(jsonData);
        GameManager.Instance.SetDebugLog(@$"
