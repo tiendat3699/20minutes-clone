@@ -79,6 +79,7 @@ public class WaveManager : Singleton<WaveManager>
     private void SpawnBoss() {
         for(int i = 0; i < bossSpawnInfos.Length; i++) {
             if(!bossSpawnInfos[i].spawned && timerBoss >= bossSpawnInfos[i].timeSpawm) {
+                Debug.Log(!bossSpawnInfos[i].spawned);
                 Vector2[] spawnPoins = GetSpawnPoins(gameManager.player.position);
                 int index = Random.Range(0,spawnPoinAmount);
                 Instantiate(bossSpawnInfos[i].bossPrefab, spawnPoins[index], Quaternion.identity);

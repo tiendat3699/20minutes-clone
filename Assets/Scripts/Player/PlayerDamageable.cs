@@ -32,7 +32,6 @@ public class PlayerDamageable : MonoBehaviour, IDamageable
 
     public void UpdateMaxHealth(PlayerStats stats) {
         int diffHp = stats.maxHp - maxHp;
-        Debug.Log(diffHp);
         hp += diffHp > 0 || stats.maxHp < hp ? diffHp : 0;
         maxHp = stats.maxHp;
     }

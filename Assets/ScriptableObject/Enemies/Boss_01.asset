@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Boss_01
   m_EditorClassIdentifier: 
   speed: 2
-  maxHP: 500
+  maxHP: 10
   damage: 1

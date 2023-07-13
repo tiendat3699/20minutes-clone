@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class EnemyDamageable : MonoBehaviour, IDamageable
 {
+    [SerializeField] private bool usePool = true;
     private int HP;
     private Rigidbody2D rb;
     private BasicEnemyBehaviour basicEnemyBehaviour;
@@ -43,7 +44,11 @@ public class EnemyDamageable : MonoBehaviour, IDamageable
             Invoke(nameof(ResetKnockBack), 0.3f);
         } else {
             PoolManager poolManager = PoolManager.Instance;
-            poolManager.enemyPooler.Release(basicEnemyBehaviour);
+            if(usePool) {
+                poolManager.enemyPooler.Release(basicEnemyBehaviour);
+            } else {
+                Destroy(gameObject);
+            }
             poolManager.hitImpactPooler.Spawn(transform.position, Quaternion.identity);
             if(!endGame) {
                 poolManager.expPooler.Spawn(transform.position, Quaternion.identity);
