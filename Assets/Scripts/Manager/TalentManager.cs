@@ -43,7 +43,7 @@ public class TalentManager : MonoBehaviour
         playerStats = player.GetComponent<PlayerStats>();
     }
 
-    private void ShowUpgrade(int lv, int maxExp) {
+    private void ShowUpgrade(int playerExp, int lv, int maxExp) {
         if(lv > 1) {
             gameManager.PauseGame();
             //display random talent

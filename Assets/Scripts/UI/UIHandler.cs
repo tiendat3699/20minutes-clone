@@ -68,8 +68,8 @@ public class UIHandler : MonoBehaviour
         sliderExp.value = exp;
     }
 
-    private void HandleLevelUp(int lv, int maxExp) {
-        sliderExp.value = 0;
+    private void HandleLevelUp(int playerExp, int lv, int maxExp) {
+        sliderExp.value = playerExp;
         sliderExp.maxValue = maxExp;
         levelText.text = "Lv." + lv.ToString();
     }

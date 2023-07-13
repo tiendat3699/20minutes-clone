@@ -12,7 +12,7 @@ public class GameManager : PersistentSingleton<GameManager>
     private int playerExp;
     private int killCount;
     public event Action<Transform> OnSetPlayer;
-    public event Action<int, int> OnUpLevel;
+    public event Action<int,int, int> OnUpLevel;
     public event Action<int> OnIncreaseExp;
     public event Action<int> OnIncreaseKill;
     public event Action OnPause;
@@ -31,7 +31,7 @@ public class GameManager : PersistentSingleton<GameManager>
     }
 
     private void Init(Scene scene, LoadSceneMode loadSceneMode) {
-        OnUpLevel?.Invoke(playerLevel, ExpToUpLevel);
+        OnUpLevel?.Invoke(0, playerLevel, ExpToUpLevel);
     }
 
     public void SetPlayer(Transform player) {
@@ -41,9 +41,9 @@ public class GameManager : PersistentSingleton<GameManager>
 
     public void UpLevel() {
         playerLevel++;
-        playerExp = 0;
+        playerExp = playerExp - ExpToUpLevel;
         ExpToUpLevel = (int)(ExpToUpLevel * 1.5f);
-        OnUpLevel?.Invoke(playerLevel, ExpToUpLevel);
+        OnUpLevel?.Invoke(playerExp, playerLevel, ExpToUpLevel);
     }
 
     public void IncreaseExp(int exp) {
