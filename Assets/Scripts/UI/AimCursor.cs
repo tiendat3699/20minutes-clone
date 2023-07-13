@@ -22,7 +22,9 @@ public class AimCursor : MonoBehaviour
     }
 
     private void Update() {
-        transform.position = Input.mousePosition;
+        Vector3 screenPoint = Input.mousePosition;
+        screenPoint.z = 100f; //distance of the plane from the camera
+        transform.position = Camera.main.ScreenToWorldPoint(screenPoint);
         if(Input.GetMouseButtonDown(0)) {
             Cursor.visible = false;
         }
